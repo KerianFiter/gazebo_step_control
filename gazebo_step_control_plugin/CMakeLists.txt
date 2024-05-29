@@ -23,30 +23,46 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
-find_package(gazebo_dev REQUIRED)
-find_package(gazebo_ros REQUIRED)
+
+find_package(gz_sim_vendor REQUIRED)
+find_package(gz-sim REQUIRED)
+
+find_package(gz_transport_vendor REQUIRED)
+find_package(gz-transport REQUIRED)
+
+find_package(gz_common_vendor REQUIRED)
+find_package(gz-common REQUIRED)
+
+find_package(gz_plugin_vendor REQUIRED)
+find_package(gz-plugin REQUIRED)
+
 find_package(gazebo_step_control_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(std_msgs REQUIRED)
 
-
-link_directories(
-  ${gazebo_dev_LIBRARY_DIRS}
-)
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
 
 # gazebo_ros_init
 add_library(gazebo_step_control SHARED
   src/gazebo_step_control.cpp
 )
 ament_target_dependencies(gazebo_step_control
-  "gazebo_step_control_interface"
-  "gazebo_dev"
-  "gazebo_ros"
-  "std_srvs"
+  rclcpp
+  gazebo_step_control_interface
+  std_srvs
+  std_msgs
+)
+
+target_link_libraries(gazebo_step_control
+  gz-common::gz-common
+  gz-plugin::gz-plugin
+  gz-sim::gz-sim
+  gz-transport::gz-transport
 )
 
 ament_export_libraries(gazebo_step_control)
-ament_export_dependencies(gazebo_dev)
 
 ament_package()
 

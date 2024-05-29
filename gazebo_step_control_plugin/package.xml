@@ -12,10 +12,16 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>gazebo_dev</depend>
+  <depend>gz_transport_vendor</depend>
+  <depend>gz_plugin_vendor</depend>
+  <depend>gz_sim_vendor</depend>
+  <depend>gz_common_vendor</depend>
+
+  <!-- <depend>gazebo_dev</depend> -->
   <depend>gazebo_step_control_interface</depend>
   <depend>rclcpp</depend>
   <depend>std_srvs</depend>
+  <depend>std_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
