@@ -21,11 +21,8 @@ find_package(gz_msgs_vendor REQUIRED)
 find_package(gz-msgs REQUIRED)
 
 find_package(std_srvs REQUIRED)
-
 find_package(std_msgs REQUIRED)
-
 find_package(rclcpp REQUIRED)
-
 find_package(gazebo_step_control_interface REQUIRED)
 
 include_directories(${GAZEBO_INCLUDE_DIRS})
