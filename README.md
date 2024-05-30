@@ -18,9 +18,6 @@ Gazebo Plugin to allow step control during ROS2 simulation.
 <world name="default">
 ...
 <plugin name="gazebo_step_control" filename="libgazebo_step_control.so">
-   <ros>
-      <!-- <namespace> ns </namespace> -->
-   </ros>
    <enable_control>false</enable_control>
 </plugin>
 ...
