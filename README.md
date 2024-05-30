@@ -11,11 +11,6 @@ Gazebo Plugin to allow step control during ROS2 simulation.
   service to provide number of steps to execute. blocking=true will block service call until steps are executed
 ```
 
-### Plugin parameter:
-```sh
-enable_control:   enable/disable step control at startup. default = false
-```
-
 ### SDF/URDF Usage:
 ```sh
 <?xml version='1.0' encoding='utf-8'?>
