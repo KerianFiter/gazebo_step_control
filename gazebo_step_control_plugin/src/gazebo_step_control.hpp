@@ -114,11 +114,7 @@ namespace step_control
 
   /// If the service call to be blocked untill all steps executed
   bool step_blocking_call_;
-
-  int m_fd;
-  char *m_map;
-  int i;
-
+  
   /// World name
   std::string worldName;
 
@@ -128,7 +124,9 @@ namespace step_control
   // Transport node
   gz::transport::Node node;
 
-  bool paused_;
+  // rclcpp::executors::SingleThreadedExecutor executor;
+
+  bool paused_ = true;
   };
 }
 

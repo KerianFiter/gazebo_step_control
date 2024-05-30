@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "gazebo_step_control.hpp"
+#include <rclcpp/executor.hpp>
 
 using namespace gz;
 using namespace sim;
@@ -23,7 +24,7 @@ GazeboStepControl::GazeboStepControl()
     : step_control_status_(false)
     , steps_to_execute_(0)
     , step_blocking_call_(false)
-    , paused_(false)
+    , paused_(true)
 {
 }
 
@@ -35,12 +36,17 @@ void GazeboStepControl::Configure(
     gz::sim::EntityComponentManager &_ecm,
     gz::sim::EventManager &_eventMgr)
 {
+    step_control_status_ = false;
+    steps_to_execute_ = 0;
+    step_blocking_call_ = false;
+    paused_ = true;
+
     world_ = _ecm.EntityByComponents(components::World());
     this->worldName = _ecm.Component<gz::sim::components::Name>(world_)->Data();
 
     rclcpp::init(0, nullptr);
 
-    ros_node_ = rclcpp::Node::make_shared("gazebo_step_control_" + worldName);
+    ros_node_ = rclcpp::Node::make_shared("gazebo_step_control_node");
 
     enablecontrol_service_ = ros_node_->create_service<std_srvs::srv::SetBool>(
         "step_control_enable",
@@ -67,11 +73,7 @@ void GazeboStepControl::Configure(
         "/step_completed", rclcpp::QoS(rclcpp::KeepLast(10)).transient_local());
 
     // Step control flag in plugin sdf
-    auto control_status_sdf = _sdf->Get<bool>("enable_control", false).first;
-
-    // Step control parameter
-    auto enable_control_param = ros_node_->declare_parameter(
-        "enable_control", rclcpp::ParameterValue(control_status_sdf));
+    bool control_status_sdf = _sdf->Get<bool>("enable_control", false).first;
 
     UpdateControl(control_status_sdf);
 }
@@ -85,6 +87,8 @@ void GazeboStepControl::PreUpdate(
     else if (paused_) {
         SetPaused(false);
     }
+
+    rclcpp::spin_some(ros_node_);
 }
 
 void GazeboStepControl::Update(
@@ -98,14 +102,16 @@ void GazeboStepControl::PostUpdate(
 {
 }
 
-void GazeboStepControl::UpdateControl(bool b) {}
+void GazeboStepControl::UpdateControl(bool enable_control)
+{
+    step_control_status_ = enable_control;
+}
 
 void GazeboStepControl::UpdateEnd(void)
 {
-    if (step_control_status_ == true) {
+    if (step_control_status_) {
         steps_to_execute_--;
-        if (steps_to_execute_ <= 0) {
-            // world_->SetPaused(true);
+        if (steps_to_execute_ <= 0 && !paused_) {
             SetPaused(true);
 
             // publish completion topic only for non blocking service call
@@ -114,15 +120,13 @@ void GazeboStepControl::UpdateEnd(void)
             }
         }
     }
-    m_map[0] = i++;
 }
 
 void GazeboStepControl::OnUpdateControl(
     std_srvs::srv::SetBool::Request::SharedPtr _req,
     std_srvs::srv::SetBool::Response::SharedPtr _res)
 {
-    // UpdateControl(_req->data);
-    step_control_status_ = _req->data;
+    UpdateControl(_req->data);
     _res->success = true;
 }
 
