@@ -1,78 +1,47 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
+
 project(gazebo_step_control_plugin)
 
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  # we dont use add_compile_options with pedantic in message packages
-  # because the Python C extensions dont comply with it
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wno-inconsistent-missing-override")
-endif()
+list(APPEND CMAKE_MODULE_PATH /usr/share/cmake/gz-cmake3/cmake3)
 
-if(WIN32)
-  add_compile_definitions(
-    # For math constants
-    _USE_MATH_DEFINES
-    # Minimize Windows namespace collision
-    NOMINMAX
-    WIN32_LEAN_AND_MEAN
-  )
-endif()
-
-find_package(ament_cmake REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-
-find_package(gz_sim_vendor REQUIRED)
-find_package(gz-sim REQUIRED)
-
-find_package(gz_transport_vendor REQUIRED)
-find_package(gz-transport REQUIRED)
-
-find_package(gz_common_vendor REQUIRED)
-find_package(gz-common REQUIRED)
+# find_package(gz_cmake_vendor REQUIRED)
+# find_package(gz-cmake REQUIRED)
+find_package(gz-cmake3 REQUIRED)
 
 find_package(gz_plugin_vendor REQUIRED)
 find_package(gz-plugin REQUIRED)
 
-find_package(gazebo_step_control_interface REQUIRED)
-find_package(rclcpp REQUIRED)
+find_package(gz_common_vendor REQUIRED)
+find_package(gz-common REQUIRED)
+
+find_package(gz_sim_vendor REQUIRED)
+find_package(gz-sim REQUIRED)
+
+find_package(gz_msgs_vendor REQUIRED)
+find_package(gz-msgs REQUIRED)
+
 find_package(std_srvs REQUIRED)
+
 find_package(std_msgs REQUIRED)
+
+find_package(rclcpp REQUIRED)
+
+find_package(gazebo_step_control_interface REQUIRED)
 
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
-
-# gazebo_ros_init
-add_library(gazebo_step_control SHARED
-  src/gazebo_step_control.cpp
-)
-ament_target_dependencies(gazebo_step_control
-  rclcpp
-  gazebo_step_control_interface
-  std_srvs
-  std_msgs
-)
-
+list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+ 
+# Add sources for each plugin to be registered.
+add_library(gazebo_step_control SHARED src/gazebo_step_control.cpp) #SampleSystem2.cc)
+set_property(TARGET gazebo_step_control PROPERTY CXX_STANDARD 17)
 target_link_libraries(gazebo_step_control
   gz-common::gz-common
   gz-plugin::gz-plugin
   gz-sim::gz-sim
-  gz-transport::gz-transport
+  gz-msgs::gz-msgs
 )
 
-ament_export_libraries(gazebo_step_control)
+ament_target_dependencies(gazebo_step_control rclcpp std_srvs std_msgs gazebo_step_control_interface)
 
-ament_package()
-
-install(
-  PROGRAMS
-    DESTINATION lib/${PROJECT_NAME}/
-)
-
-install(
-  TARGETS
-  gazebo_step_control
-  LIBRARY DESTINATION lib
-  )
+install(TARGETS gazebo_step_control DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

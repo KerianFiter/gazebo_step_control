@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>gazebo_step_control_plugin</name>
+  <name>gazebo_step_control</name>
   <version>3.5.3</version>
   <description>
     Plugin to provide gazebo step control via service
@@ -9,19 +9,17 @@
 
   <maintainer email="arshad.mehmood@intel.com">Arshad Mehmood</maintainer>
 
-  <license>Apache 2.0</license>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>gz_transport_vendor</depend>
+  <depend>gz_cmake_vendor</depend>
   <depend>gz_plugin_vendor</depend>
-  <depend>gz_sim_vendor</depend>
   <depend>gz_common_vendor</depend>
-
-  <!-- <depend>gazebo_dev</depend> -->
-  <depend>gazebo_step_control_interface</depend>
+  <depend>gz_sim_vendor</depend>
   <depend>rclcpp</depend>
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
+  <depend>gazebo_step_control_interface</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
