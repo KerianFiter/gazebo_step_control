@@ -20,16 +20,6 @@ using namespace sim;
 using namespace systems;
 using namespace step_control;
 
-GazeboStepControl::GazeboStepControl()
-    : step_control_status_(false)
-    , steps_to_execute_(0)
-    , step_blocking_call_(false)
-    , paused_(true)
-{
-}
-
-GazeboStepControl::~GazeboStepControl() {}
-
 void GazeboStepControl::Configure(
     const gz::sim::Entity &_entity,
     const std::shared_ptr<const sdf::Element> &_sdf,
