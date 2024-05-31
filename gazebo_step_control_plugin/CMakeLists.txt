@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
 
-project(gazebo_step_control_plugin)
+project(gazebo_step_control)
 
 list(APPEND CMAKE_MODULE_PATH /usr/share/cmake/gz-cmake3/cmake3)
 
@@ -19,6 +19,9 @@ find_package(gz-sim REQUIRED)
 
 find_package(gz_msgs_vendor REQUIRED)
 find_package(gz-msgs REQUIRED)
+
+find_package(gz_transport_vendor REQUIRED)
+find_package(gz-transport REQUIRED)
 
 find_package(std_srvs REQUIRED)
 find_package(std_msgs REQUIRED)
