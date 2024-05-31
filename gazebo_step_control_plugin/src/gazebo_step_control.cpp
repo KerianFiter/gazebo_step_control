@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "gazebo_step_control.hpp"
-#include <rclcpp/executor.hpp>
 
 using namespace gz;
 using namespace sim;
@@ -55,7 +54,7 @@ void GazeboStepControl::Configure(
                     this,
                     std::placeholders::_1,
                     std::placeholders::_2));
-
+    
     // Offer transient local durability on the clock topic so that if publishing
     // is infrequent (e.g. the simulation is paused), late subscribers can
     // receive the previously published message(s).
